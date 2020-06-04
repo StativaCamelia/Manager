@@ -1,10 +1,20 @@
 package com.taskManager.taskManager.controllers
 
+import com.taskManager.taskManager.exceptionhandlers.ResourceNotFoundException
 import com.taskManager.taskManager.services.TaskService
 import model.Task
-import org.bson.types.ObjectId
+import org.springframework.core.io.UrlResource
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.io.IOException
+import java.net.MalformedURLException
+import java.nio.file.Path
 import java.util.*
+import javax.annotation.Resource
+import javax.servlet.http.HttpServletRequest
+
 
 @RestController
 @RequestMapping("api/task")
@@ -40,5 +50,7 @@ class TaskController(private val taskService: TaskService) {
     @GetMapping("/estimation/{username}")
     fun getUserEstimation(@PathVariable username: String): Int = taskService.getEstimation(username)
 
+    @GetMapping("/byUser/download/{username}")
+    fun downloadFile(@PathVariable username: String): List<Task> = taskService.downloadFile(username)
 
 }

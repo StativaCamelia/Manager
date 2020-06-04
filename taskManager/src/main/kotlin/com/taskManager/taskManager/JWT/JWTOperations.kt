@@ -27,7 +27,6 @@ internal object JWTOperations {
         val signatureAlgorithm = SignatureAlgorithm.HS256
         val apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secret)
         val signingKey = SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.jcaName)
-
         val claims = HashMap<String, Any>()
         claims.put("roles", this.roles)
         return Jwts.builder()
@@ -38,7 +37,6 @@ internal object JWTOperations {
 
     fun addToken(response: HttpServletResponse, user: User) {
         val jwt = user.createJwt()
-
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:8081")
         response.writer.write(jwt)
         response.writer.flush()

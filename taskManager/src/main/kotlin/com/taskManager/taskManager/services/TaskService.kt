@@ -6,12 +6,17 @@ import com.taskManager.taskManager.daoLayer.UserDAO
 import com.taskManager.taskManager.exceptionhandlers.ResourceDuplicate
 import com.taskManager.taskManager.exceptionhandlers.ResourceNotFoundException
 import model.Task
-import org.bson.types.ObjectId
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.UrlResource
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.servlet.http.HttpServletRequest
+
 
 @Service
-class TaskService(val taskDAO: TaskDAO, val userDAO: UserDAO, val boardService: BoardService, val boardDAO: BoardDAO){
+class TaskService(val taskDAO: TaskDAO, val userDAO: UserDAO, val boardDAO: BoardDAO, val fileService: FileService){
+
     fun getAll(): List<Task> = taskDAO.findAll()
 
     fun insert(task: Task): Task {
@@ -97,5 +102,15 @@ class TaskService(val taskDAO: TaskDAO, val userDAO: UserDAO, val boardService: 
         throw ResourceNotFoundException("User-ul nu exista")
 
     }
+
+    @Throws(Exception::class)
+    fun downloadFile(username: String) : List<Task>{
+        var tasks = getByUser(username)
+        var fileName: String = fileService.createFile(username)
+        fileService.writeToFile(fileName, tasks)
+        return tasks;
+    }
+
+
 
 }
